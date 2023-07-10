@@ -52,7 +52,7 @@ def download_file():
     else:
         return jsonify({"message": "File download failed."})
 
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = "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"
 
 def search_questions(questions, context):
     pdf_directory = "./transcripts/"
