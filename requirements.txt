@@ -1,0 +1,7 @@
+flask
+langchain
+azure-storage-blob
+pypdf
+openai
+chromadb
+tiktoken
