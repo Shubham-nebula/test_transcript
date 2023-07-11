@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.document_loaders import PyPDFDirectoryLoader
-from langchain.callbacks import get_openai_callback
 from azure.storage.blob import BlobServiceClient, BlobClient
 import os
 
@@ -52,21 +51,16 @@ def download_file():
     else:
         return jsonify({"message": "File download failed."})
 
-os.environ["OPENAI_API_KEY"] = "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"
-
 def search_questions(questions, context):
     pdf_directory = "./transcripts/"
     loader = PyPDFDirectoryLoader(pdf_directory)
     docs = loader.load()
     index = VectorstoreIndexCreator().from_loaders([loader])
     output_data = []
-    total_cost = 0  # Initialize total cost
-    with get_openai_callback() as cb:
-        for i, question in enumerate(questions):
-            full_question = f"{context} {question}"  # Add the context before each question
-            answer = index.query_with_sources(full_question)
-            output_data.append(answer)
-        total_cost = cb.total_cost  # Get the total cost from the callback
+    for i, question in enumerate(questions):
+        full_question = f"{context} {question}"  # Add the context before each question
+        answer = index.query_with_sources(full_question)
+        output_data.append(answer)
     return output_data
 
 context = read_text_from_file('context.txt')
@@ -76,6 +70,8 @@ print(context)
 def predict():
     payload = request.json
     question = payload["question"]
+    api_key = request.headers.get("api-key")  # Get the API key from the header
+    os.environ["OPENAI_API_KEY"] = api_key  # Set the API key in the environment variable
     answer = search_questions([question], context)[0]  # Pass the context as an argument
     return jsonify({"answer": answer['answer'], "source": answer['sources']})
 
