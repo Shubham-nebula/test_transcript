@@ -23,17 +23,17 @@ def read_text_from_file(file_path):
 def download_file_from_blob(container_name, blob_name):
     try:
         connection_string = "DefaultEndpointsProtocol=https;AccountName=azuretestshubham832458;AccountKey=2yEaP59qlgKVv6kEUCA5ARB4wdV3ZRoL2X9zjYCcIxOSYAG1CSBbBlAMPx3uBIe7ilQtSh7purEK+AStvFn8GA==;EndpointSuffix=core.windows.net"  # Replace with your Azure Blob Storage connection string
-
+        
         blob_service_client = BlobServiceClient.from_connection_string(connection_string)
         blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
-
+        
         destination_path = f"transcripts/{blob_name}"  # Replace with the desired destination path
-
+        
         os.makedirs(os.path.dirname(destination_path), exist_ok=True)  # Create the destination directory if it doesn't exist
-
+        
         with open(destination_path, "wb") as file:
             file.write(blob_client.download_blob().readall())
-
+        
         print(f"File downloaded successfully: {destination_path}")
         return True
     except Exception as e:
@@ -44,15 +44,15 @@ def download_file_from_blob(container_name, blob_name):
 def download_file():
     payload = request.json
     blob_name = payload["blob_name"]
-
+    
     success = download_file_from_blob("transcript", blob_name)
-
+    
     if success:
         return jsonify({"message": "File download completed successfully."})
     else:
         return jsonify({"message": "File download failed."})
 
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = "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"
 
 def search_questions(questions, context):
     pdf_directory = "./transcripts/"
