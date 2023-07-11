@@ -52,7 +52,7 @@ def download_file():
     else:
         return jsonify({"message": "File download failed."})
 
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = "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"
 
 def search_questions(questions, context):
     pdf_directory = "./transcripts/"
@@ -80,4 +80,4 @@ def predict():
     return jsonify({"answer": answer['answer'], "source": answer['sources']})
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8000)
+    app.run()
